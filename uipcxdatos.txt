@@ -1,0 +1,83 @@
+1	sim/cockpit/electrical/battery_on	int	y
+2	sim/cockpit2/switches/custom_slider_on  int[24]_7	y
+3	sim/cockpit2/engine/actuators/mixture_ratio	int[8]_0 	y
+4	sim/cockpit2/switches/strobe_lights_on	int	y
+5	sim/cockpit2/switches/navigation_lights_on	int	y	
+6	sim/cockpit2/electrical/APU_starter_switch      int     y
+7	sim/cockpit2/electrical/generator_on    int[8]_0  y
+8	AMX/systems/hydsys0_on	int	y
+9	sim/cockpit2/electrical/generator_on    int[8]_1  y
+10	AMX/systems/hydsys2_on	int	y
+11	sim/cockpit2/electrical/APU_running	int	n
+12	sim/cockpit2/electrical/APU_N1_percent	float	n
+200	sim/cockpit2/fuel/fuel_tank_selector	int	y
+201	AMX/switches/BC_MC   int    y
+202	sim/cockpit2/switches/dump_fuel	int	y
+203	AMX/switches/IFU    int   y
+204	sim/cockpit2/engine/actuators/fire_extinguisher_on	int[8]_0	y
+205	AMX/fuel/refuel_on	int	y
+206	sim/cockpit/engine/fuel_pump_on	int[8]_0	y  
+207	sim/cockpit2/annunciators/engine_fires	int[8]_0	n  
+300	sim/cockpit2/switches/HUD_brightness_ratio	float	y
+301	sim/cockpit2/ice/ice_inlet_heat_on	int	y
+302	sim/cockpit2/switches/HUD_on	int	y
+303	sim/cockpit2/ice/ice_pitot_heat_on_pilot	int	y
+304	sim/cockpit2/ice/ice_window_heat_on	int	y
+305	AMX/fail/BRAKES_ACC	int	y
+306	AMX/fail/PITOT_OFF	int	y
+307	AMX/fail/ANTI_ICE	int	y
+308	AMX/fail/GEAR_ACC	int	y
+309	AMX/fail/ICE_COND	int	y
+400	sim/cockpit2/controls/gear_handle_down	int	y
+401	sim/cockpit2/radios/actuators/nav1_frequency_hz		int	y
+402	sim/cockpit2/radios/actuators/adf1_frequency_hz		int	y
+403	sim/cockpit2/radios/actuators/adf1_power	int	y
+404	sim/cockpit2/radios/actuators/nav2_frequency_hz		int	y
+405	sim/cockpit2/radios/actuators/nav2_power	int	y
+406	sim/cockpit2/radios/actuators/nav1_obs_deg_mag_pilot	float	y
+407	sim/cockpit2/switches/landing_lights_on		int	y
+408	sim/cockpit2/switches/taxi_light_on	int	y
+409	sim/cockpit2/radios/actuators/nav1_power	int	y
+410	sim/cockpit2/radios/actuators/nav2_obs_deg_mag_pilot	float	y
+411	sim/aircraft/parts/acf_gear_deploy	float[10]_0	y
+412	sim/aircraft/parts/acf_gear_deploy	float[10]_1	y
+413	sim/aircraft/parts/acf_gear_deploy	float[10]_2	y
+500	sim/cockpit2/gauges/indicators/airspeed_kts_pilot	float	n
+501	sim/flightmodel/forces/g_nrml	float	n
+502	sim/cockpit2/hydraulics/indicators/hydraulic_pressure_1	float	n
+503	sim/cockpit2/hydraulics/indicators/hydraulic_pressure_2	float	n
+504	sim/flightmodel/weight/m_fuel_total	float	n
+505	sim/cockpit2/engine/indicators/EGT_deg_C	float[8]_0	n
+506	sim/cockpit2/engine/indicators/EGT_deg_C	float[8]_1	n
+507	sim/cockpit2/engine/indicators/N1_percent	float[8]_0	n
+508	sim/cockpit2/engine/indicators/N1_percent	float[8]_1	n
+509	sim/cockpit2/gauges/indicators/vvi_fpm_pilot	float	n
+510	sim/cockpit2/gauges/indicators/altitude_ft_pilot	float	n
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,168 @@
+#  Programme permettant la recuperation de variables IOCP et de les transmattre a un
+#  Arduino.
+# 2 fichiers de configurations sont necessaires,
+# simx.conf:
+# 1 er ligne, PORT=xxxx , port IOCP
+# 2 eme ligne IP=xx.xx, adresse ip du serveur
+# lignes suivantes:
+# variable a surveiller, venant du fichier uipcxdatos.txt
+# 500	sim/cockpit2/gauges/indicators/airspeed_kts_pilot	float	n
+#
+# arduino.conf
+# decrit les modules Arduino qui recevront les variables
+# [
+# NAME= nom_module  
+# PORT = /dev/xx
+# VAR= 500,332,55
+# ]
+# cree par B.Wentzler janvier 2015
+
+
+
+
+from libs.SimxConf import *
+from libs.ArduinoConf import *
+from libs.Arduino import *
+from libs.Iocp import *
+import time
+
+
+dictVarArduino = {}  #contient les cles st variables des modules arduino
+moduleArduino = [] # Liste des modules Arduino
+
+fileSimxConf = "simx.conf"
+fileArduinoConf = "arduino.conf"
+
+
+simxConf = SimxConf(fileSimxConf)
+arduinoConf = ArduinoConf(fileArduinoConf)
+
+# Lecture des fichiers de configuration
+
+if simxConf.get() == -1:
+	print("Probleme avec le fichier",fileSimxConf)
+	exit(-1)
+
+if arduinoConf.get() == -1:
+	print("Probleme avec le fichier",fileArduinoConf)
+	exit(-1)
+
+#------------------------------------------------
+
+
+
+def majModule():
+	for i in range(len(moduleArduino)):
+		dictTemp = {}
+		dictTemp2 ={}
+		dictTemp = moduleArduino[i].getToUpdate()
+		for cle in dictTemp.keys():
+			if dictTemp[cle] != dictVarArduino[cle]:
+				dictTemp2[cle] = dictVarArduino[cle]
+		moduleArduino[i].updateData(dictTemp2)
+
+
+
+
+
+
+# Creation et init des classes pour chaque module Arduino
+
+liste = arduinoConf.getConModule()
+for mod in liste:
+	moduleArduino.append(Arduino(mod))
+
+if len(moduleArduino) == 0:
+	print("Aucun module Arduino connectes")
+	exit(-1)
+	
+#---------------------------------------
+
+# Connexions de chaque module   ATTENTION si connection nok
+
+for i in range(len(moduleArduino)):
+	moduleArduino[i].connection()
+
+
+
+#---------------------------------
+
+# Recuperation des variable pour le serveur IOCP
+
+for i in range(len(moduleArduino)):
+	dico = moduleArduino[i].getToUpdate()
+	for cle,val in dico.items():
+		dictVarArduino[cle] = val
+
+print(dictVarArduino)
+#----------------------------------------------
+
+# Connexion au serveur IOCP et enregistrement
+
+iocp = Iocp()
+ip = simxConf.getIp()
+port = simxConf.getPort()
+listeVar = []
+
+while iocp.connect(ip,port) == -1:
+	time.sleep(2)
+
+for cle in dictVarArduino.keys():
+	listeVar.append(cle)
+
+
+dictVarArduino = iocp.register(listeVar)
+#----------------------------------------------
+
+# Mise a jour des modules
+
+for i in range(len(moduleArduino)):
+	dictTemp = {}
+	dictTemp = moduleArduino[i].getToUpdate()
+	for cle in dictTemp.keys():
+		dictTemp[cle] = dictVarArduino[cle]
+	moduleArduino[i].updateData(dictTemp)
+	
+
+# Coeur du prog lecture des variable Iocp et maj des modules
+
+while True:
+	dictRecv = iocp.recvData()
+	for cle in dictRecv.keys():
+		dictVarArduino[cle] = dictRecv[cle]
+
+	majModule()
+
+
+
+
+
+
+
+# Fermeture des module Arduino
+for i in range(len(moduleArduino)):
+	moduleArduino[i].closeSerie()
+
+#Fermeture serveur
+iocp.close()
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
