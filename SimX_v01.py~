@@ -127,10 +127,8 @@ for i in range(len(moduleArduino)):
 # Coeur du prog lecture des variable Iocp et maj des modules
 
 while True:
-	# test si iocp est connecte
 	if (iocp.isConnected):
 		dictRecv = iocp.recvData()
-		# test si des datas ont ete recues
 		if(dictRecv != -1):
 			for cle in dictRecv.keys():
 				dictVarArduino[cle] = dictRecv[cle]

@@ -96,7 +96,7 @@ class Iocp:
 
 		# test la connexion au serveur est coupé, renvoie ""
 		if(len(data) == 0):
-			self.isConnected = False
+			self.connected = False
 			print("Perte de la connexion au serveur")
 			return -1
 		print(data)
