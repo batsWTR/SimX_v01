@@ -18,8 +18,4 @@ NAME= anemo
 PORT = /dev/ttyUSB3
 VAR = 500
 ]
-[
-NAME= moteurG
-PORT = /dev/ttyUSB3
-VAR = 505,507
-]
+
