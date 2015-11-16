@@ -103,6 +103,7 @@ iocp = Iocp()
 ip = simxConf.getIp()
 port = simxConf.getPort()
 listeVar = []
+
 #prend ttes les variables des Arduinos et les mets dans la liste
 for cle in dictVarArduino.keys():
 	listeVar.append(cle)
@@ -126,7 +127,9 @@ while( True):
 				dictVarArduino[cle] = dictRecv[cle]
 			majModule()
 	# coupure du serveur = mise a zero de toutes les vars
-
+	for cle in dictVarArduino.keys():
+		dictVarArduino[cle] = '0'
+	majModule()
 	
 
 

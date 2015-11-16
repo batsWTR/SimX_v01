@@ -127,7 +127,9 @@ while( True):
 				dictVarArduino[cle] = dictRecv[cle]
 			majModule()
 	# coupure du serveur = mise a zero de toutes les vars
-
+	for cle in dictVarArduino.keys():
+		dictVarArduino[cle] = '0'
+	majModule()
 	
 
 
