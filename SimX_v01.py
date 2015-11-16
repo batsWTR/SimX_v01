@@ -27,7 +27,7 @@ from libs.Iocp import *
 import time
 
 
-dictVarArduino = {}  #contient les cles st variables des modules arduino
+dictVarArduino = {}  #contient toutes les cles st variables des modules arduino
 moduleArduino = [] # Liste des modules Arduino
 
 fileSimxConf = "simx.conf"
@@ -104,37 +104,29 @@ ip = simxConf.getIp()
 port = simxConf.getPort()
 listeVar = []
 
-while iocp.connect(ip,port) == -1:
-	time.sleep(2)
-
+#prend ttes les variables des Arduinos et les mets dans la liste
 for cle in dictVarArduino.keys():
 	listeVar.append(cle)
 
+# boucle principale du programme
+while( True):
+	#essai de connexion au serveur
+	while iocp.connect(ip,port) == -1:
+		time.sleep(2)
 
-dictVarArduino = iocp.register(listeVar)
-#----------------------------------------------
 
-# Mise a jour des modules
+	#enregistrements sur le serveur
+	dictVarArduino = iocp.register(listeVar)
 
-for i in range(len(moduleArduino)):
-	dictTemp = {}
-	dictTemp = moduleArduino[i].getToUpdate()
-	for cle in dictTemp.keys():
-		dictTemp[cle] = dictVarArduino[cle]
-	moduleArduino[i].updateData(dictTemp)
-	
-
-# Coeur du prog lecture des variable Iocp et maj des modules
-
-while True:
-	# test si iocp est connecte
-	if (iocp.isConnected):
+	# test si iocp est toujours connecte
+	while (iocp.isConnected):
 		dictRecv = iocp.recvData()
 		# test si des datas ont ete recues
 		if(dictRecv != -1):
 			for cle in dictRecv.keys():
 				dictVarArduino[cle] = dictRecv[cle]
 			majModule()
+	# coupure du serveur = mise a zero de toutes les vars
 
 	
 
