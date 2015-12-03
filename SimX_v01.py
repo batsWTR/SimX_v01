@@ -25,13 +25,16 @@ from libs.ArduinoConf import *
 from libs.Arduino import *
 from libs.Iocp import *
 import time
+import os
+
 
 
 dictVarArduino = {}  #contient toutes les cles st variables des modules arduino
 moduleArduino = [] # Liste des modules Arduino
 
-fileSimxConf = "simx.conf"
-fileArduinoConf = "arduino.conf"
+dirName = os.path.dirname(__file__)
+fileSimxConf = os.path.join(dirName, "simx.conf")
+fileArduinoConf = os.path.join(dirName,"arduino.conf")
 
 
 simxConf = SimxConf(fileSimxConf)
