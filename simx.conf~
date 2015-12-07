@@ -1,5 +1,5 @@
 PORT=8090
-IP=192.168.1.104
+IP=127.0.0.1
 
 //var num tab nom tab int
 500	sim/cockpit2/gauges/indicators/airspeed_kts_pilot	float	n
