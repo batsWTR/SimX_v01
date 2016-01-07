@@ -16,19 +16,35 @@ class Arduino :
 		self.serie = 0  #port serie
 		pass
 	def connection (self) :
-		''' Se connecte au module Arduino par le port serie et met a zero toutes le 
+		''' double connection au module Arduino par le port serie et met a zero toutes le 
 		variable, retourne -1 si pb'''
 
 		# Connexion
 		print("Connexion au module",self.nom)
 
 		try:
-			self.serie = serial.Serial(self.port,57600)
+			self.serie = serial.Serial(self.port)
 		except:
 			print("Erreur de connexion sur",self.nom)
 			return -1
 		print("Connexion reussie sur", self.port)
-		time.sleep(1.5)
+
+		self.serie.setDTR(False)
+		time.sleep(3)
+		self.serie.flushInput()
+		self.serie.setDTR(True)
+
+		try:
+			self.serie = serial.Serial(self.port,baudrate=57600, timeout=0)
+		except:
+			print("Erreur de connexion sur",self.nom)
+			return -1
+		print("Connexion reussie sur", self.port)
+
+		time.sleep(2)
+
+
+
 		# Mise a zero du dictionnaire Attention pas de tests de la liste
 	
 		
@@ -46,7 +62,6 @@ class Arduino :
 
 		# met a jour self.dictVar
 		for cle, val in dictUpdate.items():
-			# if val != ' ':
 			self.dictVar[cle] = val
 
 

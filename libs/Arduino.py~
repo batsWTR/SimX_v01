@@ -23,7 +23,7 @@ class Arduino :
 		print("Connexion au module",self.nom)
 
 		try:
-			self.serie = serial.Serial(self.port,9600)
+			self.serie = serial.Serial(self.port,14400)
 		except:
 			print("Erreur de connexion sur",self.nom)
 			return -1

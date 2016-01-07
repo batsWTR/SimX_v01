@@ -128,38 +128,20 @@ class ArduinoConf :
 		listeTty = glob("/dev/ttyUSB*")
 		
 
-		# Connexion de chaque port serie trouve, double connexion serie du au reset de l arduino
+		# Connexion de chaque port serie trouve
 		for port in listeTty:
 			try:
-				serie = serial.Serial(port)
+				serie = serial.Serial(port,14400,timeout=2)
 				print("connexion sur " , port)
 			except:
 
 				print("Erreur de connexion sur %s" , port)
 				break
 
-			serie.setDTR(False)
-			time.sleep(3)
-			serie.flushInput()
-			serie.setDTR(True)
-
-
-
-			try:
-				serie = serial.Serial(port,baudrate=57600, timeout=0)
-				print("connexion sur " , port)
-			except:
-
-				print("Erreur de connexion sur %s" , port)
-				break
 		# Ligne de demande du nom du module
 			var = "xx:name=?:\r"
 			var = var.encode("ASCII")
-
-
-
-			time.sleep(2)
-
+			time.sleep(1.5)
 
 		# Envoie de la ligne au module
 			try:
@@ -171,7 +153,7 @@ class ArduinoConf :
 				break
 			
 		# Lecture du nom renvoye
-			time.sleep(1)
+			#time.sleep(1)
 			try:
 				recv = serie.readline()
 			except:
