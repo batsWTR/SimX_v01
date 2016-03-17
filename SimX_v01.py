@@ -42,7 +42,7 @@ arduinoConf = ArduinoConf(fileArduinoConf)
 
 # Lecture des fichiers de configuration
 
-if simxConf.get() == -1:
+if simxConf.get() == None:
 	print("Probleme avec le fichier",fileSimxConf)
 	exit(-1)
 
@@ -72,12 +72,12 @@ def majModule():
 # Creation et init des classes pour chaque module Arduino
 
 liste = arduinoConf.getConModule()
+if liste == None:
+	exit(-1)
 for mod in liste:
 	moduleArduino.append(Arduino(mod))
 
-if len(moduleArduino) == 0:
-	print("Aucun module Arduino connectes")
-	exit(-1)
+
 	
 #---------------------------------------
 
@@ -114,18 +114,20 @@ for cle in dictVarArduino.keys():
 # boucle principale du programme
 while( True):
 	#essai de connexion au serveur
-	while iocp.connect(ip,port) == -1:
+	while iocp.connect(ip,port) == None:
 		time.sleep(2)
 
 
 	#enregistrements sur le serveur
-	dictVarArduino = iocp.register(listeVar)
+	dictVarArduino = None
+	while dictVarArduino is None:
+		dictVarArduino = iocp.register(listeVar)
 
 	# test si iocp est toujours connecte
 	while (iocp.isConnected):
 		dictRecv = iocp.recvData()
 		# test si des datas ont ete recues
-		if(dictRecv != -1):
+		if(dictRecv != None):
 			for cle in dictRecv.keys():
 				dictVarArduino[cle] = dictRecv[cle]
 			majModule()
