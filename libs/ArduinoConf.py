@@ -130,7 +130,7 @@ class ArduinoConf :
 
 			try:
 				#serie = setial.Serial(port)
-				time.sleep(5)
+				#time.sleep(5)
 				serie = serial.Serial(port,baudrate=57600, timeout=0)
 				print("connexion sur " , port)
 				#serie.setDTR(True)

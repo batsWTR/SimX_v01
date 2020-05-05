@@ -35,7 +35,7 @@ class Arduino :
 		#self.serie.setDTR(True)
 
 		try:
-			self.serie = serial.Serial(self.port,baudrate=57600, timeout=2)
+			self.serie = serial.Serial(self.port,baudrate=57600, timeout=0)
 		except:
 			print("Erreur de connexion sur",self.nom)
 			return -1
@@ -58,7 +58,12 @@ class Arduino :
 
 		# met a jour self.dictVar
 		for cle, val in dictUpdate.items():
+			if self.dictVar[cle] == val:
+				dictUpdate.pop[cle]
 			self.dictVar[cle] = val
+
+		if len(dictUpdate) == 0:
+			return
 
 
 
@@ -78,7 +83,7 @@ class Arduino :
 			return -1
 		# returns int
 		return 0
-		pass
+		
 
 	def getToUpdate (self) :
 		''' Retourne le dictionnaire des valeurs actuelles'''
