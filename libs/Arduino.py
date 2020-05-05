@@ -22,17 +22,17 @@ class Arduino :
 		# Connexion
 		print("Connexion au module",self.nom)
 
-		try:
-			self.serie = serial.Serial(self.port)
-		except:
-			print("Erreur de connexion sur",self.nom)
-			return -1
-		print("Connexion reussie sur", self.port)
+		#try:
+		#	self.serie = serial.Serial(self.port)
+		#except:
+		#	print("Erreur de connexion sur",self.nom)
+		#	return -1
+		#print("Connexion reussie sur", self.port)
 
-		self.serie.setDTR(False)
-		time.sleep(3)
-		self.serie.flushInput()
-		self.serie.setDTR(True)
+		#self.serie.setDTR(False)
+		#time.sleep(3)
+		#self.serie.flushInput()
+		#self.serie.setDTR(True)
 
 		try:
 			self.serie = serial.Serial(self.port,baudrate=57600, timeout=0)
@@ -51,10 +51,6 @@ class Arduino :
 		for var in self.listeVar:
 			self.dictVar[var] = '0'    # mise a zero par caractere 0
 		return 0
-
-
-
-
 
 	def updateData (self, dictUpdate) :
 		'''  Prend en parametre les donnees qui ont changees, les envoient a 
@@ -84,13 +80,10 @@ class Arduino :
 		return 0
 		pass
 
-
-
 	def getToUpdate (self) :
 		''' Retourne le dictionnaire des valeurs actuelles'''
 		# returns Dict
 		return self.dictVar
-
 
 	def calibrate(self,valeur):
 		print("Envoie de ",valeur, " a ",self.nom)
@@ -100,10 +93,18 @@ class Arduino :
 		self.serie.write(envoie)
 		pass
 
-
 	def closeSerie (self) :
 		print("Fermeture de la connexion sur",self.port)
 		if self.serie != 0:
 			self.serie.close()
 	
 
+
+def main():
+	ard = Arduino(["VOR","/dev/ttyUSB0",["609"]])
+	ard.connection()
+	ard.closeSerie()
+
+
+if __name__ == "__main__":
+	main()
