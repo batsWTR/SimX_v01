@@ -14,7 +14,7 @@
 
 
 
-# IOCP ver 2 2020
+
 
 # written by B.Wentzler baptiste.wentzler@wanadoo.fr
 
@@ -44,9 +44,117 @@ class Iocp:
 
 	def connect(self,IP="", Port= 0):
 		""" This function is used to establish the connection, give it the IP and Port"""
-		if self.IP == "": self.IP = IP
-		if self.Port == 0: self.Port = Port
-		print('Try to connect to ',self.IP, self.Port,"......")
+		self.IP = IP
+		self.Port = Port
+		print('Essai de connexion sur',self.IP, self.Port,"......")
+		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		#self.s.settimeout(5.0)
+		try:
+			self.s.connect((self.IP,self.Port))
+			data = self.s.recv(1024)
+			self.isConnected = True
+			print("Connexion avec",self.IP,"etablie")
+			data = data.decode()
+			return 0
+		except:
+			print("Erreur de connexion")
+			self.isConnected = False
+			return -1
+		
+		
+	def is_connected(self):
+		return self.isConnected
+
+
+	def register(self,register):
+		""" Register to the server with a list of variable as parameter"""
+		if len(register) == 0 or self.isConnected == False:
+			return -1
+		self.listRegister = register
+		reg = "Arn.Inicio:"
+		for l in self.listRegister:
+			reg = reg + str(l) + ":"
+		reg = reg + "\r\n"
+		reg = reg.encode()
+		self.s.send(reg)
+		data = self.s.recv(1024)
+		print(data)
+		data = data.decode() 
+		tmpList = data.split(':') 	
+		tmpList.pop(0)
+		tmpList.pop()   # ATTENTION
+		dataDict = {}
+		for n in tmpList:
+			self.remplieDict(n, dataDict)
+
+		return dataDict
+
+
+	def recvData(self):
+		""" Look if something comes from server, the function returns a dict [number][var]"""
+		dataDict = {}
+
+		data = self.s.recv(1024)
+
+		# test la connexion au serveur est coupé, renvoie ""
+		if(len(data) == 0):
+			self.isConnected = False
+			print("Perte de la connexion au serveur")
+			return -1
+		print(data)
+		data = data.decode() 
+		tmpList = data.split(':') 	
+		tmpList.pop(0)
+		tmpList.pop()   # ATTENTION
+		for n in tmpList:
+			self.remplieDict(n, dataDict)
+
+
+		return dataDict
+
+
+
+
+	def sendData():
+		""" If client want to mofify a registered variable"""
+
+
+	
+	def close(self):
+		""" This function will close the connection"""
+		print("Connexion terminee")
+		if self.isConnected:
+			fin = "Arn.Fin:\r\n"
+			fin = fin.encode()
+			self.s.send(fin)
+			self.s.close()
+
+
+#------------------------------------------------------------
+
+class Iocp2:
+	""" This class is used to connect to an UIPC server"""
+
+	def __init__(self,IP = "", Port = 0):
+		self.IP = IP
+		self.Port = Port
+		self.s  = 0
+		self.listRegister = list()
+		self.isConnected = False
+
+	def remplieDict(self, line, dico):
+		lineList = line.split('=')
+		num = lineList[0]
+		val = lineList[1]
+		dico[num] = val
+		
+
+
+	def connect(self,IP="", Port= 0):
+		""" This function is used to establish the connection, give it the IP and Port"""
+		self.IP = IP
+		self.Port = Port
+		print('Essai de connexion sur',self.IP, self.Port,"......")
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.s.setblocking(0)
 		self.s.settimeout(2.0)
@@ -54,48 +162,46 @@ class Iocp:
 			self.s.connect((self.IP,self.Port))
 			data = self.s.recv(1024)
 			self.isConnected = True
-			print("Connexion with ",self.IP,"established\n\n\n")
+			print("Connexion avec",self.IP,"etablie")
 			data = data.decode()
 			return 0
 		except:
-			print("Connexion error")
+			print("Erreur de connexion")
 			self.isConnected = False
 			return -1
 		
 		
 	def is_connected(self):
-		""" are we connected to the server ?"""
 		return self.isConnected
 
 
 	def register(self,register):
 		""" Register to the server with a list of variable as parameter"""
 		if len(register) == 0 or self.isConnected == False:
-			print("Unable to register")
 			return -1
-
-
 		self.listRegister = register
 		reg = "Arn.Inicio:"
 		for l in self.listRegister:
 			reg = reg + str(l) + ":"
 		reg = reg + "\r\n"
-		print("Registration of: " + reg)
 		reg = reg.encode()
-		
-		# send data to register
 		self.s.send(reg)
-		time.sleep(1)
+		data = self.s.recv(1024)
+		print(data)
+		data = data.decode() 
+		tmpList = data.split(':') 	
+		tmpList.pop(0)
+		tmpList.pop()   # ATTENTION
+		dataDict = {}
+		for n in tmpList:
+			self.remplieDict(n, dataDict)
 
-		# values from registration
-		reg = self.recvData()
-		print("Registration from server: " + str(reg))
-		return reg
-		
+		self.isConnected = True
+		return dataDict
 
 
 	def recvData(self):
-		""" Look if something comes from server, the function returns a dict ["number"]["var"] or -1"""
+		""" Look if something comes from server, the function returns a dict [number][var]"""
 		dataDict = {}
 
 		try:
@@ -104,11 +210,12 @@ class Iocp:
 			return -1
 		
 
-		# test server connexion""
+		# test la connexion au serveur est coupé, renvoie ""
 		if(len(data) == 0):
-			print("No connexion with server")
+			print("Perte de la connexion au serveur")
 			return -1
 			
+		print(data)
 		data = data.decode()
 		data = data.split("\n")
 		for i in data:
@@ -116,7 +223,7 @@ class Iocp:
 				if i.find("A") != -1:
 					tmpList = i.split(':') 	
 					tmpList.pop(0)
-					tmpList.pop()   
+					tmpList.pop()   # ATTENTION
 					for n in tmpList:
 						self.remplieDict(n, dataDict)
 
@@ -127,7 +234,7 @@ class Iocp:
 
 
 	def sendData(self,var,val):
-		""" If client want to mofify a registered variable var = char, val = char"""
+		""" If client want to mofify a registered variable"""
 
 		resp = "Arn.Resp:"
 		resp = resp + var + "=" + val + ":" + "\r\n"
@@ -135,13 +242,13 @@ class Iocp:
 		
 		if self.isConnected:
 	 		self.s.sendall(resp)
-		print("Sending: " + str(resp))
+
 		return
 
 	
 	def close(self):
 		""" This function will close the connection"""
-		print("Connexion with server closed")
+		print("Connexion terminee")
 		if self.isConnected:
 			fin = "Arn.Fin:\r\n"
 			fin = fin.encode()
@@ -153,13 +260,13 @@ class Iocp:
 
 def main():
 	print("main")
-	iocp = Iocp()
+	iocp = Iocp2()
 	while iocp.connect("127.0.0.1", 8090) == -1:
 		time.sleep(2)
 	iocp.register([500,501,502,503,510])
 	while 1:
 		print(iocp.recvData())
-		time.sleep(2)
+		#time.sleep(3)
 
 
 

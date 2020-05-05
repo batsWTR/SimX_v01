@@ -42,7 +42,7 @@ arduinoConf = ArduinoConf(fileArduinoConf)
 
 # Lecture des fichiers de configuration
 
-if simxConf.get() == None:
+if simxConf.get() == -1:
 	print("Probleme avec le fichier",fileSimxConf)
 	exit(-1)
 
@@ -53,14 +53,18 @@ if arduinoConf.get() == -1:
 #------------------------------------------------
 
 
-
+# Mise a jour de tous les modules
 def majModule():
 	for i in range(len(moduleArduino)):
 		dictTemp = {}
 		dictTemp2 ={}
+		# dicttemp contiens les cles a mettre a jour
 		dictTemp = moduleArduino[i].getToUpdate()
+		print(moduleArduino[i].nom," MAJ: ",dictTemp)
+		print("DICTARD: ", dictVarArduino)
 		for cle in dictTemp.keys():
 			if dictTemp[cle] != dictVarArduino[cle]:
+				print("NO ERROR")
 				dictTemp2[cle] = dictVarArduino[cle]
 		moduleArduino[i].updateData(dictTemp2)
 
@@ -72,12 +76,12 @@ def majModule():
 # Creation et init des classes pour chaque module Arduino
 
 liste = arduinoConf.getConModule()
-if liste == None:
-	exit(-1)
 for mod in liste:
 	moduleArduino.append(Arduino(mod))
 
-
+if len(moduleArduino) == 0:
+	print("Aucun module Arduino connectes")
+	exit(-1)
 	
 #---------------------------------------
 
@@ -102,7 +106,7 @@ print(dictVarArduino)
 
 # Connexion au serveur IOCP et enregistrement
 
-iocp = Iocp()
+iocp = Iocp2()
 ip = simxConf.getIp()
 port = simxConf.getPort()
 listeVar = []
@@ -114,20 +118,18 @@ for cle in dictVarArduino.keys():
 # boucle principale du programme
 while( True):
 	#essai de connexion au serveur
-	while iocp.connect(ip,port) == None:
+	while iocp.connect(ip,port) == -1:
 		time.sleep(2)
 
 
 	#enregistrements sur le serveur
-	dictVarArduino = None
-	while dictVarArduino is None:
-		dictVarArduino = iocp.register(listeVar)
-
+	dictVarArduino = iocp.register(listeVar)
+	print("REGISTERED: ",dictVarArduino)
 	# test si iocp est toujours connecte
 	while (iocp.isConnected):
 		dictRecv = iocp.recvData()
 		# test si des datas ont ete recues
-		if(dictRecv != None):
+		if(dictRecv != -1):
 			for cle in dictRecv.keys():
 				dictVarArduino[cle] = dictRecv[cle]
 			majModule()

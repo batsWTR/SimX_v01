@@ -1,64 +1,43 @@
-# Class that read Simx configuration file
-# it must contain:
-# PORT=8090
-# IP=192.168.1.20
-# // comment lines
-# list of var from uipcxdatos.txt
-# 
-
-
-
-
-
-
-
 class SimxConf() :
-	'''open simx.conf and extractdatas IP, PORT et VAR iocp'''
+	'''ouverture du fichier simx.conf et extraction des donnees IP, PORT et VAR iocp'''
 	def __init__(self, file) :
 		self.confFile = file
-		self.port = None
-		self.ip = None
-		self.var = {} # list
-
+		self.port = 0 # int
+		self.ip = " " # String
+		self.var = {} # dict
+		pass
 
 
 	def get (self) :
-		""" open file and get datas """
-		print("Open ",self.confFile)
+		""" ouverture du fichier et recuperation des donnees """
+		print("Overture du fichier ",self.confFile)
 
 		'''Ouverture fichier'''
 		try:
 			fichier = open(self.confFile, "r")
 		except:
-			print("File does not exist")
-			return None
+			print("Le fichier n existe pas")
+			return -1
 
-		# read datas
+		'''Lecture des info'''
 		lire = True
 		while lire:
 			ligne = fichier.readline()
-			#p if end of file
+			#print(ligne)
 			if ligne == "":
 				lire = False
-			# if port
 			elif ligne[0] == 'P':
 				index = ligne.index('=')
 				port = ligne[index+1:-1]
-				port = port.strip()
 				self.port = int(port)
-			# if IP
 			elif ligne[0] == 'I':
 				index = ligne.index('=')
 				ip = ligne[index+1:-1]
-				ip = ip.strip()
 				self.ip = ip
-			# if empty line
 			elif ligne[0] == "\n":
 				pass
-			# if comment
 			elif ligne[0] == '/':
 				pass
-			# if var line
 			else:
 				tmp = ligne.split("	")
 				var = int(tmp[0])
@@ -68,29 +47,27 @@ class SimxConf() :
 
 
 		fichier.close()
-		print("Close ",self.confFile)
-		print("ip: ", self.ip)
-		print("port: ",self.port)
-		print('---- Vars List ----')
-		for var, name in self.var.items():
-			print(var,' -> ',name)
+		print("Fermeture de ",self.confFile)
 		# returns int
 		return 0
 
 
 
 	def getPort (self) :
-		""" return port """
+		""" retourne le port """
+		print("port: ",self.port)
 		# returns int
 		return self.port
-
+		pass
 	def getIp (self) :
-		""" return IP """
+		""" retourne l IP """
+		print("ip: ", self.ip)
 		# returns String
 		return self.ip
-
+		pass
 	def getVar (self) :
-		""" return var list """
+		""" retourne la liste des variables """
+		#print("var: ", self.var)
 		# returns list
 		return self.var
-
+		pass
