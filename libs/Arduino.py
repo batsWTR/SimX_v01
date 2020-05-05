@@ -35,7 +35,7 @@ class Arduino :
 		#self.serie.setDTR(True)
 
 		try:
-			self.serie = serial.Serial(self.port,baudrate=57600, timeout=0)
+			self.serie = serial.Serial(self.port,baudrate=57600, timeout=2)
 		except:
 			print("Erreur de connexion sur",self.nom)
 			return -1
@@ -72,7 +72,7 @@ class Arduino :
 		var = var.encode("ASCII")
 		try:
 			self.serie.write(var)
-			print("Envoi de:",var)
+			print("To Arduino:",var)
 		except:
 			print("Impossible d envoyer les donnees sur",self.port)
 			return -1

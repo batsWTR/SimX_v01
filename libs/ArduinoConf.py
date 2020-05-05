@@ -19,11 +19,6 @@ class ArduinoConf :
 		self.fichier = 0
 		pass
 
-	
-
-
-
-
 	def get (self) :
 		""" recuperation des donnees, renvoie -1 si pb """
 		try:
@@ -55,7 +50,6 @@ class ArduinoConf :
 		# returns int
 		return 0
 		pass
-
 
 #---------------------------------------------------------------------
 # fonction integree a get()
@@ -100,10 +94,6 @@ class ArduinoConf :
 		pass
 
 
-
-
-
-
 #---------------------Retourne tous les modules-----------------------------------
 
 
@@ -130,24 +120,21 @@ class ArduinoConf :
 
 		# Connexion de chaque port serie trouve, double connexion serie du au reset de l arduino
 		for port in listeTty:
-			try:
-				serie = serial.Serial(port)
-				print("connexion sur " , port)
-			except:
 
-				print("Erreur de connexion sur %s" , port)
-				break
-
-			serie.setDTR(False)
-			time.sleep(3)
-			serie.flushInput()
-			serie.setDTR(True)
+			#serie.setDTR(False)
+			#time.sleep(3)
+			#serie.flushInput()
+			#serie.setDTR(True)
 
 
 
 			try:
+				#serie = setial.Serial(port)
+				time.sleep(5)
 				serie = serial.Serial(port,baudrate=57600, timeout=0)
 				print("connexion sur " , port)
+				#serie.setDTR(True)
+				#serie.flushInput()
 			except:
 
 				print("Erreur de connexion sur %s" , port)
@@ -171,13 +158,13 @@ class ArduinoConf :
 				break
 			
 		# Lecture du nom renvoye
-			time.sleep(1)
+			time.sleep(5)
 			try:
 				recv = serie.readline()
 			except:
 				print("Erreur de lecture sur " , port)
 				serie.close()
-				break
+				return
 
 		
 
