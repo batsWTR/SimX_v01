@@ -124,7 +124,7 @@ class ArduinoConf :
 				serie = serial.Serial(port,baudrate=57600, timeout=0)
 				print("connexion sur " , port)
 			except:
-				print("Erreur de connexion sur %s" , port)
+				print("Erreur de connexion sur " , port)
 				break
 		# Ligne de demande du nom du module
 			var = "xx:name=?:\r"
