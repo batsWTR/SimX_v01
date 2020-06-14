@@ -16,8 +16,8 @@ class ArduinoConf :
 	def __init__(self, confFile) :
 		self.confFile = confFile # String
 		self.listeModule = [] # list
-		self.fichier = 0
-		pass
+		self.fichier = 0  # file descriptor
+		
 
 	def get (self) :
 		""" recuperation des donnees, renvoie -1 si pb """
@@ -90,8 +90,8 @@ class ArduinoConf :
 
 				
 
-		# returns 
-		pass
+
+		
 
 
 #---------------------Retourne tous les modules-----------------------------------
@@ -100,9 +100,8 @@ class ArduinoConf :
 	def getModule (self) :
 		""" retourne la liste listeModule """
 		# returns list
-
 		return self.listeModule
-		pass
+		
 
 
 #------------Retourne les modules connectes
@@ -121,30 +120,15 @@ class ArduinoConf :
 		# Connexion de chaque port serie trouve, double connexion serie du au reset de l arduino
 		for port in listeTty:
 
-			#serie.setDTR(False)
-			#time.sleep(3)
-			#serie.flushInput()
-			#serie.setDTR(True)
-
-
-
 			try:
-				#serie = setial.Serial(port)
-				#time.sleep(5)
 				serie = serial.Serial(port,baudrate=57600, timeout=0)
 				print("connexion sur " , port)
-				#serie.setDTR(True)
-				#serie.flushInput()
 			except:
-
 				print("Erreur de connexion sur %s" , port)
 				break
 		# Ligne de demande du nom du module
 			var = "xx:name=?:\r"
 			var = var.encode("ASCII")
-
-
-
 			time.sleep(2)
 
 
