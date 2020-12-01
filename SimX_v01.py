@@ -31,6 +31,7 @@ import os
 
 dictVarArduino = {}  #contient toutes les cles st variables des modules arduino
 moduleArduino = [] # Liste des modules Arduino
+listeVarRegister = [] # liste des variables à enregistrer sur le serveur IOCP
 
 dirName = os.path.dirname(__file__)
 fileSimxConf = os.path.join(dirName, "simx.conf")
@@ -48,7 +49,33 @@ if simxConf.get() == -1:
 
 if arduinoConf.get() == -1:
 	print("Probleme avec le fichier",fileArduinoConf)
-	exit(-1)
+
+
+#  on fait la liste complete des variables à enregistrer, on affiche
+
+print("**** Fichier de conf ****")
+for j,k in simxConf.getVar().items():
+		print(j,k)
+		listeVarRegister.append(j)
+
+
+print("**** Fichier Arduino ++++")
+for i in  arduinoConf.getModule():
+		find = 0
+		print(i)
+		for j in i[2]:
+			j = int(j)
+			for l in listeVarRegister:
+				if j == l:
+					find = 1
+			if find == 0:
+				listeVarRegister.append(j)
+
+print("liste var")
+print(listeVarRegister)
+
+
+
 
 #------------------------------------------------
 
@@ -76,44 +103,23 @@ def majModule():
 # Creation et init des classes pour chaque module Arduino
 
 liste = arduinoConf.getConModule()
-for mod in liste:
-	moduleArduino.append(Arduino(mod))
+nb_module = len(liste)
 
-if len(moduleArduino) == 0:
+if len(liste) > 0:
+	for mod in liste:
+		moduleArduino.append(Arduino(mod))
+	for i in range(len(moduleArduino)):
+		moduleArduino[i].connection()
+else:
 	print("Aucun module Arduino connectes")
-	exit(-1)
-	
-#---------------------------------------
 
-# Connexions de chaque module   ATTENTION si connection nok
-
-for i in range(len(moduleArduino)):
-	moduleArduino[i].connection()
-
-
-
-#---------------------------------
-
-# Recuperation des variable pour le serveur IOCP
-
-for i in range(len(moduleArduino)):
-	dico = moduleArduino[i].getToUpdate()
-	for cle,val in dico.items():
-		dictVarArduino[cle] = val
-
-print(dictVarArduino)
-#----------------------------------------------
 
 # Connexion au serveur IOCP et enregistrement
 
 iocp = Iocp2()
 ip = simxConf.getIp()
 port = simxConf.getPort()
-listeVar = []
 
-#prend ttes les variables des Arduinos et les mets dans la liste
-for cle in dictVarArduino.keys():
-	listeVar.append(cle)
 
 # boucle principale du programme
 while( True):
@@ -123,7 +129,7 @@ while( True):
 
 
 	#enregistrements sur le serveur
-	dictVarArduino = iocp.register(listeVar)
+	dictVarArduino = iocp.register(listeVarRegister)
 	print("REGISTERED: ",dictVarArduino)
 	# test si iocp est toujours connecte
 	while (iocp.isConnected):
@@ -132,11 +138,13 @@ while( True):
 		if(dictRecv != -1):
 			for cle in dictRecv.keys():
 				dictVarArduino[cle] = dictRecv[cle]
-		majModule()
+		if nb_module != 0:
+			majModule()
 	# coupure du serveur = mise a zero de toutes les vars
 	for cle in dictVarArduino.keys():
 		dictVarArduino[cle] = '0'
-	majModule()
+	if nb_module != 0:
+		majModule()
 	
 
 
